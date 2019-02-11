@@ -28,10 +28,10 @@ from matplotlib import pyplot
 # In[3]:
 
 
-def contourplot(sp):
- x=sp.columns[0:].astype(float)
- y=sp.T.columns[0:].astype(float)
- z=sp
+def contourplot(spec):
+ x=spec.columns[0:].astype(float)
+ y=spec.index[0:].astype(float)
+ z=spec
  pyplot.figure(figsize=(4,4))
  pyplot.contour(x,y,z,num_contour,colors='black',linewidths=0.5,linestyles='solid')
  pyplot.pcolormesh(x,y,z,cmap='jet')
@@ -41,13 +41,13 @@ def contourplot(sp):
 
 
 def specread(inputfile):
- sp=pandas.read_csv(inputfile)
- sp=sp.rename(columns={'Unnamed: 0':''})
- sp=sp.set_index('')
- sp=sp.T
+ spec=pandas.read_csv(inputfile)
+ spec=spec.rename(columns={'Unnamed: 0':''})
+ spec=spec.set_index('')
+ spec=spec.T
  if dynamic:
-  sp=sp-sp.mean()
- return sp
+  spec=spec-spec.mean()
+ return spec
 
 
 # In[5]:
@@ -57,7 +57,9 @@ def specread(inputfile):
 spec1=specread(inputfile1)
 if hetero==False:
  inputfile2=inputfile1
-spec2=specread(inputfile2)   
+spec2=specread(inputfile2)
+if len(spec1)!=len(spec2):
+ raise Exception('data mismatching')
 
 
 # In[6]:
