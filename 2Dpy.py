@@ -4,6 +4,16 @@
 # In[1]:
 
 
+get_ipython().run_line_magic('matplotlib', 'inline')
+from matplotlib import pyplot
+import math
+import numpy
+import pandas
+
+
+# In[2]:
+
+
 hetero=False
 inputfile1="spec.csv"
 
@@ -15,39 +25,27 @@ dynamic=True
 num_contour=16
 
 
-# In[2]:
-
-
-get_ipython().run_line_magic('matplotlib', 'inline')
-import math
-import numpy
-import pandas
-from matplotlib import pyplot
-
-
 # In[3]:
+
+
+def specread(inputfile):
+ spec=pandas.read_csv(inputfile,header=0,index_col=0)
+ spec=spec.T
+ if dynamic:
+  spec=spec-spec.mean()
+ return spec
+
+
+# In[4]:
 
 
 def contourplot(spec):
  x=spec.columns[0:].astype(float)
  y=spec.index[0:].astype(float)
  z=spec
+ zrange=numpy.absolute(spec.values).max()
  pyplot.figure(figsize=(4,4))
- pyplot.contour(x,y,z,num_contour,colors='black',linewidths=0.5,linestyles='solid')
- pyplot.pcolormesh(x,y,z,cmap='jet')
-
-
-# In[4]:
-
-
-def specread(inputfile):
- spec=pandas.read_csv(inputfile)
- spec=spec.rename(columns={'Unnamed: 0':''})
- spec=spec.set_index('')
- spec=spec.T
- if dynamic:
-  spec=spec-spec.mean()
- return spec
+ pyplot.pcolormesh(x,y,z,cmap='jet',vmin=-1*zrange,vmax=zrange)
 
 
 # In[5]:
@@ -66,7 +64,8 @@ if len(spec1)!=len(spec2):
 
 
 # synchronous correlation
-sync=spec1.T.dot(spec2.values)/(len(spec1)-1)
+sync=pandas.DataFrame(spec1.values.T@spec2.values/(len(spec1)-1))
+sync.index=spec1.columns
 sync.columns=spec2.columns
 sync=sync.T
 contourplot(sync)
@@ -87,9 +86,9 @@ for i in range(len(spec1)):
 # In[8]:
 
 
-# asynchronous correlation
-asyn=pandas.DataFrame(noda).dot(spec2.values)
-asyn=spec1.T.dot(asyn.values)/(len(spec1)-1)
+# asynchronouse correlation
+asyn=pandas.DataFrame(spec1.values.T@noda@spec2.values/(len(spec1)-1))
+asyn.index=spec1.columns
 asyn.columns=spec2.columns
 asyn=asyn.T
 contourplot(asyn)
