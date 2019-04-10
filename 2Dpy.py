@@ -21,6 +21,7 @@ inputfile1="spec.csv"
 #inputfile1="spec1.csv"
 #inputfile2="spec2.csv"
 
+left_large=False
 dynamic=True
 num_contour=16
 
@@ -46,6 +47,13 @@ if hetero==False:
 spec2=specread(inputfile2)
 if len(spec1)!=len(spec2):
  raise Exception('data mismatching')
+spec1.T.plot(legend=None)
+if left_large==True:
+ pyplot.xlim(max(spec1.columns),min(spec1.columns))
+if hetero==True:
+ spec2.T.plot(legend=None)
+ if left_large==True:
+  pyplot.xlim(max(spec2.columns),min(spec2.columns))
 
 
 # In[5]:
@@ -59,8 +67,9 @@ def contourplot(spec):
  pyplot.figure(figsize=(4,4))
  pyplot.contour(x,y,z,num_contour,cmap='bwr',vmin=-1*zmax,vmax=zmax)
  #pyplot.pcolormesh(x,y,z,cmap='jet',vmin=-1*zmax,vmax=zmax)
- #pyplot.xlim(max(x),min(x))
- #pyplot.ylim(max(y),min(y))
+ if left_large==True:
+  pyplot.xlim(max(x),min(x))
+  pyplot.ylim(max(y),min(y))
 
 
 # In[6]:
