@@ -39,18 +39,6 @@ def specread(inputfile):
 # In[4]:
 
 
-def contourplot(spec):
- x=spec.columns[0:].astype(float)
- y=spec.index[0:].astype(float)
- z=spec
- zrange=numpy.absolute(spec.values).max()
- pyplot.figure(figsize=(4,4))
- pyplot.pcolormesh(x,y,z,cmap='jet',vmin=-1*zrange,vmax=zrange)
-
-
-# In[5]:
-
-
 # file read
 spec1=specread(inputfile1)
 if hetero==False:
@@ -58,6 +46,21 @@ if hetero==False:
 spec2=specread(inputfile2)
 if len(spec1)!=len(spec2):
  raise Exception('data mismatching')
+
+
+# In[5]:
+
+
+def contourplot(spec):
+ x=spec.columns[0:].astype(float)
+ y=spec.index[0:].astype(float)
+ z=spec.values
+ zmax=numpy.absolute(z).max()
+ pyplot.figure(figsize=(4,4))
+ pyplot.contour(x,y,z,num_contour,cmap='bwr',vmin=-1*zmax,vmax=zmax)
+ #pyplot.pcolormesh(x,y,z,cmap='jet',vmin=-1*zmax,vmax=zmax)
+ #pyplot.xlim(max(x),min(x))
+ #pyplot.ylim(max(y),min(y))
 
 
 # In[6]:
@@ -69,7 +72,7 @@ sync.index=spec1.columns
 sync.columns=spec2.columns
 sync=sync.T
 contourplot(sync)
-sync.to_csv(inputfile1[:len(inputfile1)-4]+'_sync.csv')
+#sync.to_csv(inputfile1[:len(inputfile1)-4]+'_sync.csv')
 
 
 # In[7]:
@@ -92,5 +95,5 @@ asyn.index=spec1.columns
 asyn.columns=spec2.columns
 asyn=asyn.T
 contourplot(asyn)
-asyn.to_csv(inputfile1[:len(inputfile1)-4]+'_async.csv')
+#asyn.to_csv(inputfile1[:len(inputfile1)-4]+'_async.csv')
 
