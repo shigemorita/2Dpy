@@ -21,7 +21,7 @@ inputfile1="spec.csv"
 #inputfile1="spec1.csv"
 #inputfile2="spec2.csv"
 
-left_large=False
+left_large=True
 dynamic=True
 num_contour=16
 
@@ -29,22 +29,13 @@ num_contour=16
 # In[3]:
 
 
-def specread(inputfile):
- spec=pandas.read_csv(inputfile,header=0,index_col=0)
- spec=spec.T
- if dynamic:
-  spec=spec-spec.mean()
- return spec
-
-
-# In[4]:
-
-
 # file read
-spec1=specread(inputfile1)
+spec1=pandas.read_csv(inputfile1,header=0,index_col=0)
+spec1=spec1.T
 if hetero==False:
  inputfile2=inputfile1
-spec2=specread(inputfile2)
+spec2=pandas.read_csv(inputfile2,header=0,index_col=0)
+spec2=spec2.T
 if len(spec1)!=len(spec2):
  raise Exception('data mismatching')
 spec1.T.plot(legend=None)
@@ -54,9 +45,12 @@ if hetero==True:
  spec2.T.plot(legend=None)
  if left_large==True:
   pyplot.xlim(max(spec2.columns),min(spec2.columns))
+if dynamic:
+ spec1=spec1-spec1.mean()
+ spec2=spec2-spec2.mean()
 
 
-# In[5]:
+# In[4]:
 
 
 def contourplot(spec):
@@ -72,7 +66,7 @@ def contourplot(spec):
   pyplot.ylim(max(y),min(y))
 
 
-# In[6]:
+# In[5]:
 
 
 # synchronous correlation
@@ -84,7 +78,7 @@ contourplot(sync)
 #sync.to_csv(inputfile1[:len(inputfile1)-4]+'_sync.csv')
 
 
-# In[7]:
+# In[6]:
 
 
 # Hilbert-Noda transformation matrix
@@ -95,7 +89,7 @@ for i in range(len(spec1)):
    noda[i,j]=1/math.pi/(j-i)
 
 
-# In[8]:
+# In[7]:
 
 
 # asynchronouse correlation
