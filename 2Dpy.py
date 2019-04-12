@@ -30,12 +30,10 @@ num_contour=16
 
 
 # file read
-spec1=pandas.read_csv(inputfile1,header=0,index_col=0)
-spec1=spec1.T
+spec1=pandas.read_csv(inputfile1,header=0,index_col=0).T
 if hetero==False:
  inputfile2=inputfile1
-spec2=pandas.read_csv(inputfile2,header=0,index_col=0)
-spec2=spec2.T
+spec2=pandas.read_csv(inputfile2,header=0,index_col=0).T
 if len(spec1)!=len(spec2):
  raise Exception('data mismatching')
 spec1.T.plot(legend=None)
